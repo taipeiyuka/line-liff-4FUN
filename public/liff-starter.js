@@ -29,6 +29,7 @@ window.onload = function() {
 		bearerToken = "";
         initializeLiffOrDie(myLiffId);
     }
+	searchAction();
 };
 
 /**
