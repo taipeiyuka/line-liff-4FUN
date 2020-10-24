@@ -343,14 +343,14 @@ function fetchTweetsByTweetID(ID){
 		  }
 		  else like_count = like_count.toString();
 		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
-		  /*console.log(user_id);
+		  console.log(user_id);
 		  console.log(username);
 		  console.log(prof_image_url);
 		  console.log(image_url);
 		  console.log(tweet_text);
 		  console.log(time);
 		  console.log(like_count);
-		  console.log(tweet_url);*/
+		  console.log(tweet_url);
 		  //call gen flex
 		  //TODO: 
 	  })
@@ -438,5 +438,8 @@ function embedTweet(ID){
 function createButton(ID){
 	var button = document.createElement('button');
 	button.innerHTML = ID;
+	button.addEventListener('click', function() {
+		fetchTweetsByTweetID(ID);
+	});
 	document.getElementById(ID).appendChild(button);
 }
