@@ -211,6 +211,98 @@ function generateFlex(profilePicURL,posterName,picURL,content,likes,time,URL){
     }}
     return flex;
 }
+function generateNoImgFlex(profilePicURL,posterName,content,likes,time,URL){
+    var flex = {
+      "type": "flex",
+      "altText": "This is a Flex Message",
+      "contents": {
+          "type": "bubble",
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                      {
+                        "type": "image",
+                        "url": profilePicURL,
+                        "aspectMode": "cover",
+                        "size": "full"
+                      }
+                    ],
+                    "cornerRadius": "100px",
+                    "width": "72px",
+                    "height": "72px",
+                    "spacing": "md"
+                  },
+                  {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                      {
+                        "type": "text",
+                        "text": time,
+                        "size": "xxs"
+                      },
+                      {
+                        "type": "text",
+                        "contents": [
+                          {
+                            "type": "span",
+                            "text": posterName,
+                            "weight": "bold",
+                            "color": "#000000"
+                          },
+                          {
+                            "type": "span",
+                            "text": "     "
+                          },
+                          {
+                            "type": "span",
+                            "text": content
+                          }
+                        ],
+                        "size": "sm",
+                        "wrap": true
+                      },
+                      {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": likes.concat(" Like"),
+                            "size": "sm",
+                            "color": "#bcbcbc",
+                            "position": "relative"
+                          }
+                        ],
+                        "spacing": "sm",
+                        "margin": "md"
+                      }
+                    ]
+                  }
+                ],
+                "spacing": "xl",
+                "paddingAll": "20px"
+              }
+            ],
+            "paddingAll": "0px",
+            "action": {
+              "type": "uri",
+              "label": "action",
+              "uri": URL
+            }
+        }
+    }}
+    return flex;
+}
 /**
 * Register event handlers for the buttons displayed in the app
 */
@@ -259,7 +351,6 @@ function searchAction(){
 		if(usage === "user"){
 			var user = document.getElementById("text");
 			fetchTweetsByUser(user.value, "10", "false", "true");
-			fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
 		}
 		else if(usage === "keyword"){
 			var txt = document.getElementById("text");
@@ -359,11 +450,19 @@ function fetchTweetsByTweetID(ID){
 		  else like_count = like_count.toString();
 		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
           if (liff.isApiAvailable('shareTargetPicker')) {
-            liff.shareTargetPicker([generateFlex(prof_image_url,username,image_url,tweet_text,like_count,time,tweet_url)]).then(
-                document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
-            ).catch(function (res) {
-                document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
-            });
+            if(image_url.length>0){
+                liff.shareTargetPicker([generateFlex(prof_image_url,username,image_url,tweet_text,like_count,time,tweet_url)]).then(
+                    document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
+                ).catch(function (res) {
+                    document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
+                });
+            }else{
+                liff.shareTargetPicker([generateNoImgFlex(prof_image_url,username,tweet_text,like_count,time,tweet_url)]).then(
+                    document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
+                ).catch(function (res) {
+                    document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
+                });
+            }
         }
 	  })
 	  .catch(error => console.log('error', error));
