@@ -21,6 +21,5 @@ app.get('/get-flex/:userId', function(req, res) {
 	var query = pgClient.query("SELECT postId FROM share WHERE userId = '"+ userId + "'", (err, resp) => {
 	  if (err) throw err;
 	  res.json(resp);
-	  client.end();
 	});
 });
