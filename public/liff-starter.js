@@ -105,19 +105,117 @@ function displayIsInClientInfo() {
         document.getElementById('shareTargetPicker').classList.toggle('hidden');
     }
 }
-
+function generateFlex(profilePicURL,posterName,picURL,content,likes,time,URL){
+    var flex = {
+      "type": "flex",
+      "altText": "This is a Flex Message",
+      "contents": {
+          "type": "bubble",
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                  {
+                    "type": "image",
+                    "url": picURL,
+                    "size": "5xl",
+                    "aspectMode": "cover",
+                    "aspectRatio": "150:196",
+                    "gravity": "center",
+                    "flex": 1
+                  }
+                ]
+              },
+              {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                      {
+                        "type": "image",
+                        "url": profilePicURL,
+                        "aspectMode": "cover",
+                        "size": "full"
+                      }
+                    ],
+                    "cornerRadius": "100px",
+                    "width": "72px",
+                    "height": "72px",
+                    "spacing": "md"
+                  },
+                  {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                      {
+                        "type": "text",
+                        "text": time,
+                        "size": "xxs"
+                      },
+                      {
+                        "type": "text",
+                        "contents": [
+                          {
+                            "type": "span",
+                            "text": posterName,
+                            "weight": "bold",
+                            "color": "#000000"
+                          },
+                          {
+                            "type": "span",
+                            "text": "     "
+                          },
+                          {
+                            "type": "span",
+                            "text": content
+                          }
+                        ],
+                        "size": "sm",
+                        "wrap": true
+                      },
+                      {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": likes.concat(" Like"),
+                            "size": "sm",
+                            "color": "#bcbcbc",
+                            "position": "relative"
+                          }
+                        ],
+                        "spacing": "sm",
+                        "margin": "md"
+                      }
+                    ]
+                  }
+                ],
+                "spacing": "xl",
+                "paddingAll": "20px"
+              }
+            ],
+            "paddingAll": "0px",
+            "action": {
+              "type": "uri",
+              "label": "action",
+              "uri": URL
+            }
+        }
+    }}
+    return flex;
+}
 /**
 * Register event handlers for the buttons displayed in the app
 */
 function registerButtonHandlers() {
-    // openWindow call
-    document.getElementById('openWindowButton').addEventListener('click', function() {
-        liff.openWindow({
-            url: 'https://line.me',
-            external: true
-        });
-    });
-
     // closeWindow call
     document.getElementById('closeWindowButton').addEventListener('click', function() {
         if (!liff.isInClient()) {
@@ -125,49 +223,6 @@ function registerButtonHandlers() {
         } else {
             liff.closeWindow();
         }
-    });
-
-    // sendMessages call
-    document.getElementById('sendMessageButton').addEventListener('click', function() {
-        if (!liff.isInClient()) {
-            sendAlertIfNotInClient();
-        } else {
-            liff.sendMessages([{
-                'type': 'text',
-                'text': "You've successfully sent a message! Hooray!"
-            }]).then(function() {
-                window.alert('Message sent');
-            }).catch(function(error) {
-                window.alert('Error sending message: ' + error);
-            });
-        }
-    });
-
-    // scanCode call
-    document.getElementById('scanQrCodeButton').addEventListener('click', function() {
-        /*if (!liff.isInClient()) {
-            sendAlertIfNotInClient();
-        } else {
-            liff.scanCode().then(result => {
-                // e.g. result = { value: "Hello LIFF app!" }
-                const stringifiedResult = JSON.stringify(result);
-                document.getElementById('scanQrField').textContent = stringifiedResult;
-                toggleQrCodeReader();
-            }).catch(err => {
-                document.getElementById('scanQrField').textContent = "scanCode failed!";
-            });
-        }*/
-		searchAction();
-		//clearBox('container');
-		//fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
-		//fetchTweetsByTweetIDs(["1319871444101353473","1318823569988612096"]);
-		//fetchTweetsByTweetID("1319871444101353473");
-		//fetchTweetsByTweetID("1318823569988612096");
-		//fetchTweetsByText("#TaiwanCanHelp");
-		
-		//embedTweet('1319862880846708737');
-		
-
     });
 
     // get access token
@@ -201,19 +256,6 @@ function registerButtonHandlers() {
         }).catch(function(error) {
             window.alert('Error getting profile: ' + error);
         });
-    });
-
-    document.getElementById('shareTargetPicker').addEventListener('click', function () {
-        if (liff.isApiAvailable('shareTargetPicker')) {
-            liff.shareTargetPicker([{
-                'type': 'text',
-                'text': 'Hello, World!'
-            }]).then(
-                document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
-            ).catch(function (res) {
-                document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
-            });
-        }
     });
 
     // login call, only when external browser is used
@@ -289,8 +331,22 @@ function searchAction(){
 			fetchTweetsByText(txt.value);
 		}
 		else if(usage === "shareurl"){
-			var id = "1318823569988612096";
-			fetchTweetsByTweetID(id);
+            liff.getProfile().then(function(profile) {
+            userId = profile.userId;
+            fetch('/get-flex/'.concat(userId))
+            .then(function(reqResponse) {
+                return reqResponse.json();
+            })
+            .then(function(jsonResponse) {
+                postId = jsonResponse.rows[0].postid;
+                fetchTweetsByTweetID(postId);
+            })
+            .catch(function(error) {
+                console.log(error)
+            });
+        }).catch(function(error) {
+            window.alert('Error getting profile: ' + error);
+        });
 		}
 	});
 }
@@ -366,16 +422,13 @@ function fetchTweetsByTweetID(ID){
 		  }
 		  else like_count = like_count.toString();
 		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
-		  /*console.log(user_id);
-		  console.log(username);
-		  console.log(prof_image_url);
-		  console.log(image_url);
-		  console.log(tweet_text);
-		  console.log(time);
-		  console.log(like_count);
-		  console.log(tweet_url);*/
-		  //call gen flex
-		  //TODO: 
+          if (liff.isApiAvailable('shareTargetPicker')) {
+            liff.shareTargetPicker([generateFlex(prof_image_url,username,image_url,tweet_text,like_count,time,tweet_url)]).then(
+                document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
+            ).catch(function (res) {
+                document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
+            });
+        }
 	  })
 	  .catch(error => console.log('error', error));
 }
