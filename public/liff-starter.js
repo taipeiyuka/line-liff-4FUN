@@ -1,9 +1,12 @@
+var bearerToken;
+
 window.onload = function() {
     const useNodeJS = true;   // if you are not using a node server, set this value to false
     const defaultLiffId = "";   // change the default LIFF value if you are not using a node server
 
     // DO NOT CHANGE THIS
     let myLiffId = "";
+	bearerToken = "";
 
     // if node is used, fetch the environment variable and pass it to the LIFF method
     // otherwise, pass defaultLiffId
@@ -14,6 +17,7 @@ window.onload = function() {
             })
             .then(function(jsonResponse) {
                 myLiffId = jsonResponse.id;
+				bearerToken = jsonResponse.bearerToken;
                 initializeLiffOrDie(myLiffId);
             })
             .catch(function(error) {
@@ -22,6 +26,7 @@ window.onload = function() {
             });
     } else {
         myLiffId = defaultLiffId;
+		bearerToken = "";
         initializeLiffOrDie(myLiffId);
     }
 };
@@ -139,7 +144,7 @@ function registerButtonHandlers() {
 
     // scanCode call
     document.getElementById('scanQrCodeButton').addEventListener('click', function() {
-        if (!liff.isInClient()) {
+        /*if (!liff.isInClient()) {
             sendAlertIfNotInClient();
         } else {
             liff.scanCode().then(result => {
@@ -150,7 +155,17 @@ function registerButtonHandlers() {
             }).catch(err => {
                 document.getElementById('scanQrField').textContent = "scanCode failed!";
             });
-        }
+        }*/
+		clearBox('container');
+		fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
+		//fetchTweetsByTweetIDs(["1319871444101353473","1318823569988612096"]);
+		//fetchTweetsByTweetID("1319871444101353473");
+		//fetchTweetsByTweetID("1318823569988612096");
+		//fetchTweetsByText("#TaiwanCanHelp");
+		
+		//embedTweet('1319862880846708737');
+		
+
     });
 
     // get access token
@@ -255,4 +270,173 @@ function toggleElement(elementId) {
     } else {
         elem.style.display = 'block';
     }
+}
+
+function fetchTweetsByUser(user, numcnts, rt, no_rp){
+	url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name="+user+"&count="+numcnts+"&include_rts="+rt+"&exclude_replies="+no_rp;
+	
+	var myHeaders = new Headers();
+	myHeaders.append("Authorization", "Bearer "+bearerToken);
+
+	var requestOptions = {
+	  method: 'GET',
+	  headers: myHeaders,
+	  redirect: 'follow',
+	};
+
+	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	  .then(function(response) { return response.json(); })
+	  .then(function(json) {
+		  //console.log(json);
+		  var x;
+		  for(x in json){
+			  //console.log(json[x]["id_str"]);
+			  var child = document.createElement('div');
+			  child.setAttribute("id", json[x]["id_str"]);
+			  document.getElementById("container").appendChild(child);
+			  embedTweet(json[x]["id_str"]);
+			  createButton(json[x]["id_str"]);
+		  }
+	  })
+	  .catch(error => console.log('error', error));
+}
+
+function fetchTweetsByTweetID(ID){
+	url = "https://api.twitter.com/2/tweets/"+ID+"?";
+	url += "&tweet.fields=created_at,public_metrics&expansions=author_id,attachments.media_keys&user.fields=profile_image_url&media.fields=preview_image_url,url";
+	var myHeaders = new Headers();
+	myHeaders.append("Authorization", "Bearer "+bearerToken);
+
+	var requestOptions = {
+	  method: 'GET',
+	  headers: myHeaders,
+	  redirect: 'follow',
+	};
+
+	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	  .then(function(response) { return response.json(); })
+	  .then(function(json) {
+		  //prepare for flex massage
+		  var user_id = json["includes"]["users"][0]["username"];
+		  var username = json["includes"]["users"][0]["name"];
+		  var prof_image_url = json["includes"]["users"][0]["profile_image_url"];
+		  var image_url = [];
+		  if(json["includes"].hasOwnProperty("media")) {
+			  var x;
+			  for(x in json["includes"]["media"]){
+				if(json["includes"]["media"][x].hasOwnProperty("url")){
+					image_url.push(json["includes"]["media"][x]["url"]);
+				}
+				else if(json["includes"]["media"][x].hasOwnProperty("preview_image_url")){
+					image_url.push(json["includes"]["media"][x]["preview_image_url"]); 
+				}
+			  }
+		  }
+		  var tweet_text = json["data"]["text"];
+		  var time = json["data"]["created_at"];
+		  var like_count = json["data"]["public_metrics"]["like_count"];
+		  like_count = parseInt(like_count, 10);
+		  if(like_count > 1000){
+			  like_count = (like_count - like_count%100) / 1000;
+			  like_count = like_count.toString();
+			  like_count += "K";
+		  }
+		  else like_count = like_count.toString();
+		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
+		  /*console.log(user_id);
+		  console.log(username);
+		  console.log(prof_image_url);
+		  console.log(image_url);
+		  console.log(tweet_text);
+		  console.log(time);
+		  console.log(like_count);
+		  console.log(tweet_url);*/
+		  //call gen flex
+		  //TODO: 
+	  })
+	  .catch(error => console.log('error', error));
+}
+
+function fetchTweetsByTweetIDs(IDs){
+	url = "https://api.twitter.com/2/tweets?ids=";
+	var x;
+	for (x in IDs) {
+	  url += IDs[x];
+	  url +=",";
+	}
+	url = url.slice(0, -1);
+	url += "&tweet.fields=created_at,public_metrics&expansions=author_id,attachments.media_keys&user.fields=profile_image_url&media.fields=preview_image_url,url";
+	var myHeaders = new Headers();
+	myHeaders.append("Authorization", "Bearer "+bearerToken);
+
+	var requestOptions = {
+	  method: 'GET',
+	  headers: myHeaders,
+	  redirect: 'follow',
+	};
+
+	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	  .then(function(response) { return response.json(); })
+	  .then(function(json) {
+		  var x;
+		  for(x in json){
+			  
+		  }
+	  })
+	  .catch(error => console.log('error', error));
+}
+
+function fetchTweetsByText(txt){
+	// hashtag: %23
+	txt = encodeURIComponent(txt);
+	url = "https://api.twitter.com/2/tweets/search/recent?query="+txt;
+	//+"&tweet.fields=created_at,public_metrics&expansions=author_id,attachments.media_keys&user.fields=profile_image_url&media.fields=preview_image_url,url";
+	var myHeaders = new Headers();
+	myHeaders.append("Authorization", "Bearer "+bearerToken);
+
+	var requestOptions = {
+	  method: 'GET',
+	  headers: myHeaders,
+	  redirect: 'follow',
+	};
+
+	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	  .then(function(response) { 
+			return response.json(); })
+	  .then(function(json) {
+		  var x;
+		  console.log(json);
+		  for(x in json["data"]){
+			  //console.log(json["data"][x]["id"]);
+			  var child = document.createElement('div');
+			  child.setAttribute("id", json["data"][x]["id"]);
+			  document.getElementById("container").appendChild(child);
+			  embedTweet(json["data"][x]["id"]);
+			  createButton(json["data"][x]["id"]);
+		  }
+	  })
+	  .catch(error => console.log('error', error));
+}
+
+function clearBox(elementID)
+{
+	document.getElementById(elementID).innerHTML = '';
+    /*el = document.getElementById(elementID);
+	while( el.hasChildNodes() ){
+		el.removeChild(el.lastChild);
+	}*/
+}
+
+function embedTweet(ID){
+	twttr.widgets.createTweet(
+		  ID,
+		  document.getElementById(ID),
+		  {
+		  }
+		);
+}
+function createButton(ID){
+	var button = document.createElement('button');
+	button.innerHTML = ID;
+	document.getElementById(ID).appendChild(button);
 }
