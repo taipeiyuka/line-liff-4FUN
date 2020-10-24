@@ -273,6 +273,7 @@ function searchAction(){
                 return reqResponse.json();
             })
             .then(function(jsonResponse) {
+                console.log(jsonResponse)
                 postId = jsonResponse.rows[0].postid;
                 fetchTweetsByTweetID(postId);
             })
