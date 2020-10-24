@@ -156,8 +156,9 @@ function registerButtonHandlers() {
                 document.getElementById('scanQrField').textContent = "scanCode failed!";
             });
         }*/
-		clearBox('container');
-		fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
+		searchAction();
+		//clearBox('container');
+		//fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
 		//fetchTweetsByTweetIDs(["1319871444101353473","1318823569988612096"]);
 		//fetchTweetsByTweetID("1319871444101353473");
 		//fetchTweetsByTweetID("1318823569988612096");
@@ -272,6 +273,27 @@ function toggleElement(elementId) {
     }
 }
 
+function searchAction(){
+	const submit = document.getElementById("go");
+	submit.addEventListener('click', function() {
+		clearBox('container');
+		var usage = document.querySelector('input[name = "usage"]:checked').value;
+		if(usage === "user"){
+			var user = document.getElementById("text");
+			fetchTweetsByUser(user.value, "10", "false", "true");
+			fetchTweetsByUser("realdonaldtrump", "10", "false", "true");
+		}
+		else if(usage === "keyword"){
+			var txt = document.getElementById("text");
+			fetchTweetsByText(txt.value);
+		}
+		else if(usage === "shareurl"){
+			var id = "1318823569988612096";
+			fetchTweetsByTweetID(id);
+		}
+	});
+}
+
 function fetchTweetsByUser(user, numcnts, rt, no_rp){
 	url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name="+user+"&count="+numcnts+"&include_rts="+rt+"&exclude_replies="+no_rp;
 	
@@ -343,14 +365,14 @@ function fetchTweetsByTweetID(ID){
 		  }
 		  else like_count = like_count.toString();
 		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
-		  console.log(user_id);
+		  /*console.log(user_id);
 		  console.log(username);
 		  console.log(prof_image_url);
 		  console.log(image_url);
 		  console.log(tweet_text);
 		  console.log(time);
 		  console.log(like_count);
-		  console.log(tweet_url);
+		  console.log(tweet_url);*/
 		  //call gen flex
 		  //TODO: 
 	  })
