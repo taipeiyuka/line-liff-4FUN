@@ -123,7 +123,7 @@ function generateFlex(profilePicURL,posterName,picURL,content,likes,time,URL){
                     "url": picURL,
                     "size": "5xl",
                     "aspectMode": "cover",
-                    "aspectRatio": "150:196",
+                    "aspectRatio": "1:1",
                     "gravity": "center",
                     "flex": 1
                   }
@@ -155,7 +155,7 @@ function generateFlex(profilePicURL,posterName,picURL,content,likes,time,URL){
                     "contents": [
                       {
                         "type": "text",
-                        "text": time,
+                        "text": "GMT ".concat(time),
                         "size": "xxs"
                       },
                       {
@@ -247,7 +247,7 @@ function generateNoImgFlex(profilePicURL,posterName,content,likes,time,URL){
                     "contents": [
                       {
                         "type": "text",
-                        "text": time,
+                        "text": "GMT ".concat(time),
                         "size": "xxs"
                       },
                       {
@@ -390,7 +390,7 @@ function fetchTweetsByUser(user, numcnts, rt, no_rp){
 	  redirect: 'follow',
 	};
 
-	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	fetch("https://cors-anywhere.herokuapp.com/"+url, requestOptions)
 	  .then(function(response) { return response.json(); })
 	  .then(function(json) {
 		  //console.log(json);
@@ -419,10 +419,11 @@ function fetchTweetsByTweetID(ID){
 	  redirect: 'follow',
 	};
 
-	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	fetch("https://cors-anywhere.herokuapp.com/"+url, requestOptions)
 	  .then(function(response) { return response.json(); })
 	  .then(function(json) {
 		  //prepare for flex massage
+          console.log(json)
 		  var user_id = json["includes"]["users"][0]["username"];
 		  var username = json["includes"]["users"][0]["name"];
 		  var prof_image_url = json["includes"]["users"][0]["profile_image_url"];
@@ -448,10 +449,10 @@ function fetchTweetsByTweetID(ID){
 			  like_count += "K";
 		  }
 		  else like_count = like_count.toString();
-		  var tweet_url = "https://twitter.com/i/web/status/"+json["includes"]["users"][0]["id"];
+		  var tweet_url = "https://twitter.com/i/web/status/"+json["data"]["id"];
           if (liff.isApiAvailable('shareTargetPicker')) {
             if(image_url.length>0){
-                liff.shareTargetPicker([generateFlex(prof_image_url,username,image_url,tweet_text,like_count,time,tweet_url)]).then(
+                liff.shareTargetPicker([generateFlex(prof_image_url,username,image_url[0],tweet_text,like_count,time,tweet_url)]).then(
                     document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
                 ).catch(function (res) {
                     document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
@@ -486,7 +487,7 @@ function fetchTweetsByTweetIDs(IDs){
 	  redirect: 'follow',
 	};
 
-	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	fetch("https://cors-anywhere.herokuapp.com/"+url, requestOptions)
 	  .then(function(response) { return response.json(); })
 	  .then(function(json) {
 		  var x;
@@ -511,7 +512,7 @@ function fetchTweetsByText(txt){
 	  redirect: 'follow',
 	};
 
-	fetch("https://my-cors-anywhere.herokuapp.com/"+url, requestOptions)
+	fetch("https://cors-anywhere.herokuapp.com/"+url, requestOptions)
 	  .then(function(response) { 
 			return response.json(); })
 	  .then(function(json) {
