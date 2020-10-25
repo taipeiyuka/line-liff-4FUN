@@ -27,13 +27,25 @@
           return t;
         }(document, "script", "twitter-wjs"));</script>
         <form style="text-align:center">
-            <input type="text" class="form-control" id="text" size = "30"><br><br>
-            <input type="radio" name="usage" id="user" value="user"><label for="user">User</label>
+            <input type="text" class="form-control w-25 align-items-center" id="text"><br><br>
+            <!--<input type="radio" name="usage" id="user" value="user"><label for="user">User</label>
             <input type="radio" name="usage" id="keyword" value="keyword"><label for="keyword">Keyword</label>
-            <input type="radio" name="usage" id="shareurl" value="shareurl"><label for="shareurl">Share the url</label>
+            <input type="radio" name="usage" id="shareurl" value="shareurl"><label for="shareurl">Share the url</label>-->
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="usage" id="user" value="user">
+                <label class="form-check-label" for="user">User</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="usage" id="keyword" value="keyword">
+                <label class="form-check-label" for="keyword">Keyword</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="usage" id="shareurl" value="shareurl">
+                <label class="form-check-label" for="shareurl">Share the url</label>
+            </div>
             <input type="button" class="btn btn-primary" value="Go" id="go">
         </form>
-        <div id="container" style="text-align:center"></div>
+        <div id="container" class="row justify-content-center align-items-center h-100"></div>
         <!--
         <div id="liffAppContent">
             <div id="shareTargetPickerMessage"></div>
