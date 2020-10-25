@@ -549,7 +549,7 @@ function embedTweet(ID){
 }
 function createButton(ID){
 	var button = document.createElement('button');
-	button.innerHTML = ID;
+	button.innerHTML = "Share the Tweet below";
 	button.addEventListener('click', function() {
 		fetchTweetsByTweetID(ID);
 	});
