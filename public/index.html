@@ -1,29 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-	<script>window.twttr = (function(d, s, id) {
-	  var js, fjs = d.getElementsByTagName(s)[0],
-		t = window.twttr || {};
-	  if (d.getElementById(id)) return t;
-	  js = d.createElement(s);
-	  js.id = id;
-	  js.src = "https://platform.twitter.com/widgets.js";
-	  fjs.parentNode.insertBefore(js, fjs);
-
-	  t._e = [];
-	  t.ready = function(f) {
-		t._e.push(f);
-	  };
-
-	  return t;
-	}(document, "script", "twitter-wjs"));</script>
-	<form>
-		<input type="text" id="text"><br><br>
-		<input type="radio" name="usage" id="user" value="user"><label for="user">User</label>
-		<input type="radio" name="usage" id="keyword" value="keyword"><label for="keyword">Keyword</label>
-		<input type="radio" name="usage" id="shareurl" value="shareurl"><label for="shareurl">Share the url</label>
-		<input type="button" value="Go" id="go">
-	</form>
-	<div id="container"></div>
+	
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -32,9 +9,34 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <script>window.twttr = (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+          if (d.getElementById(id)) return t;
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "https://platform.twitter.com/widgets.js";
+          fjs.parentNode.insertBefore(js, fjs);
+
+          t._e = [];
+          t.ready = function(f) {
+            t._e.push(f);
+          };
+
+          return t;
+        }(document, "script", "twitter-wjs"));</script>
+        <form style="text-align:center">
+            <input type="text" class="form-control" id="text" size = "150"><br><br>
+            <input type="radio" name="usage" id="user" value="user"><label for="user">User</label>
+            <input type="radio" name="usage" id="keyword" value="keyword"><label for="keyword">Keyword</label>
+            <input type="radio" name="usage" id="shareurl" value="shareurl"><label for="shareurl">Share the url</label>
+            <input type="button" class="btn btn-primary" value="Go" id="go">
+        </form>
+        <div id="container" style="text-align:center"></div>
+        <!--
         <div id="liffAppContent">
             <div id="shareTargetPickerMessage"></div>
-            <!-- LIFF DATA -->
+            ## LIFF DATA
             <div id="liffData">
                 <h2 id="liffDataHeader" class="textLeft">LIFF Data</h2>
                 <table>
@@ -64,7 +66,7 @@
                     </tr>
                 </table>
             </div>
-            <!-- LOGIN LOGOUT BUTTONS -->
+            ## LOGIN LOGOUT BUTTONS
             <div class="buttonGroup">
                 <button id="liffLoginButton">Log in</button>
                 <button id="liffLogoutButton">Log out</button>
@@ -77,6 +79,7 @@
                 </div>
             </div>
         </div>
+        -->
         <!-- LIFF ID ERROR -->
         <div id="liffIdErrorMessage" class="hidden">
             <p>You have not assigned any value for LIFF ID.</p>
