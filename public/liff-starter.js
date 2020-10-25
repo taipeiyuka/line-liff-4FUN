@@ -544,7 +544,6 @@ function embedTweet(ID){
 		  ID,
 		  document.getElementById(ID),
 		  {
-        align: center
 		  }
 		);
 }
