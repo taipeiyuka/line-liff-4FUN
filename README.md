@@ -1,8 +1,7 @@
 # 4Fun: Twitter Line LIFF App
 ###### tags: `MeiChu Hackathon`
 
-<img src="https://i.imgur.com/oW7rSMk.jpg" width="330">
-<img src="https://i.imgur.com/L6TEnXb.jpg" width="330">
+<img src="https://i.imgur.com/oW7rSMk.jpg" width="330"><img src="https://i.imgur.com/L6TEnXb.jpg" width="330">
 
 ## Target Audience
 Our target users are **Line users that may not have a Twitter account**. They are still likely to be interested in Tweets, for example information about American and Japanese celebrities, or American politics, especially the tweets posted by the 45th president of the United States. With our LIFF app, users can actively search for recent contents and share the tweets with Line friends in a simple and delightful way.
